@@ -302,6 +302,7 @@ var controller = (function () {
       reset: getButton(sim, 'reset')
     },
     editor: {
+      runlog: getButton(ed, 'editor-runlog'),
       load: getButton(ed, 'editor-load'),
       revert: getButton(ed, 'editor-revert')
     }

@@ -1,32 +1,44 @@
 name: copy 1s
 source code: |
-  # Copies a string of consecutive 1s.
   input: '111'
   blank: 0
   start state: each
   table:
-    # mark the current 1 by erasing it
     each:
-      0: {R: H}
-      1: {write: 0, R: sep}
-    # skip to the separator
+      '0':
+        R: H
+      '1':
+        write: 0
+        R: sep
     sep:
-      0: {R: add}
-      1: R
-    # skip to the end of the copy and write a 1
+      '0':
+        R: add
+      '1': R
     add:
-      0: {write: 1, L: sepL}
-      1: R
-    # return to the separator
+      '0':
+        write: 1
+        L: sepL
+      '1': R
     sepL:
-      0: {L: next}
-      1: L
-    # return to the erased 1, restore it, and then advance to the next 1
+      '0':
+        L: next
+      '1': L
     next:
-      0: {write: 1, R: each}
-      1: L
-    H:
+      '0':
+        write: 1
+        R: each
+      '1': L
+    H: {}
 
+
+  # Copies a string of consecutive 1s.
+  
+  # Steps:
+  # mark the current 1 by erasing it
+  # skip to the separator
+  # skip to the end of the copy and write a 1
+  # return to the separator
+  # return to the erased 1, restore it, and then advance to the next 1
 
   # Exercises:
 
@@ -36,9 +48,9 @@ source code: |
 
   # • Make a machine to output the endless sequence 1011011101111011111...
 positions:
-  each: {x: 400   , y: 100}
-  sep:  {x: 400.01, y: 250}
-  add:  {x: 400.02, y: 400}
-  sepL: {x: 250   , y: 250}
-  next: {x: 250.01, y: 100}
-  H:    {x: 550   , y: 100}
+  each: {x: 400, y: 100}
+  sep:  {x: 400, y: 250}
+  add:  {x: 400, y: 400}
+  sepL: {x: 250, y: 250}
+  next: {x: 250, y: 100}
+  H:    {x: 550, y: 100}

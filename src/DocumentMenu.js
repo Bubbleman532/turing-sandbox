@@ -48,6 +48,35 @@ function DocumentMenu(args) {
   // Listen for selection changes
   var self = this;
   this.menu.addEventListener('change', function () {
+    //if the editor isnt visible, hide the runlog, open the editor
+    var divLog = window.document.getElementById('run-log');
+    var divEditor = window.document.getElementById('editor-container');
+    var editorLoad = window.document.getElementById('editor-load');
+    var editorRevert = window.document.getElementById('editor-revert');
+    var editorRunlog = window.document.getElementById('editor-runlog');
+
+    if (!(divLog.getAttribute("hidden") === "hidden")) {
+      divEditor.removeAttribute("hidden");
+      divLog.setAttribute("hidden", "hidden");
+      editorLoad.disabled = false;
+      editorRevert.disabled = false;
+      editorRunlog.innerHTML="Run Log";
+    }
+
+    //make sure to also reset the label boxes so we don't keep a selection accidentally
+    var nodeLabel = window.document.getElementById('nodeLabel');
+    var read = window.document.getElementById('read');
+    var write = window.document.getElementById('write');
+    nodeLabel.value = "";
+    read.value = "";
+    write.value = "";
+
+    //now make it look normal
+    nodeLabel.disabled = true;
+    window.document.getElementById('node-edit-controls').setAttribute("style", "display: flex");
+    window.document.getElementById('transition-edit-controls').setAttribute("style", "display: none");
+    window.document.getElementById('startState').disabled = true;
+    window.document.getElementById('deleteNode').disabled = true;
     self.onChange(self.currentDocument, {type: 'open'});
   });
 

@@ -1,39 +1,51 @@
 name: equal strings
 source code: |
-  # Decides the language { w#w | w ∈ {0,1}* }
-  # (two equal binary strings separated by '#')
-  input: '01001#01001' # try '#', '1#10', '10#1', '10#10'
-  blank: ' '
-  # Two strings are equal if they are both the empty string,
-  # or they start with the same symbol and are equal thereafter.
+  input: 01001#01001
+  blank: _
   start state: start
   table:
     start:
-      # Inductive case: start with the same symbol.
-      0: {write: ' ', R: have0}
-      1: {write: ' ', R: have1}
-      # Base case: empty string.
-      '#': {R: check}
+      '0':
+        write: _
+        R: have0
+      '1':
+        write: _
+        R: have1
+      '#':
+        R: check
     have0:
-      [0,1]: R
-      '#': {R: match0}
+      '0,1': R
+      '#':
+        R: match0
     have1:
-      [0,1]: R
-      '#': {R: match1}
+      '0,1': R
+      '#':
+        R: match1
     match0:
+      '0':
+        write: x
+        L: back
       x: R
-      0: {write: x, L: back}
     match1:
+      '1':
+        write: x
+        L: back
       x: R
-      1: {write: x, L: back}
     back:
-      [0,1,'#',x]: L
-      ' ': {R: start}
+      '0,1,#,x': L
+      _:
+        R: start
     check:
       x: R
-      ' ': {R: accept}
-    accept:
-
+      _:
+        R: accept
+    accept: {}
+  
+  
+  # Decides the language { w#w | w ∈ {0,1}* }
+  # (two equal binary strings separated by '#')
+  # Two strings are equal if they are both the empty string,
+  # or they start with the same symbol and are equal thereafter.
 
   # Exercises:
 

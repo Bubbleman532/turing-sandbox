@@ -1,20 +1,28 @@
 name: binary increment
 source code: |
-  # Adds 1 to a binary number.
   input: '1011'
-  blank: ' '
+  blank: _
   start state: right
   table:
-    # scan to the rightmost digit
     right:
-      [1,0]: R
-      ' '  : {L: carry}
-    # then carry the 1
+      '1,0': R
+      _:
+        L: carry
     carry:
-      1      : {write: 0, L}
-      [0,' ']: {write: 1, L: done}
-    done:
+      '1':
+        write: 0
+        L: carry
+      '0,_':
+        write: 1
+        L: done
+    done: {}
 
+
+  # Adds 1 to a binary number.
+
+  # Steps:
+  # scan to the rightmost digit
+  # then carry the 1
 
   # Exercises:
 

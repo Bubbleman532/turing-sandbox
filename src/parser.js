@@ -107,8 +107,8 @@ function checkTableType(val) {
   }
   if (typeof val !== 'object') {
     throw new TMSpecError('Transition table has an invalid type',
-    {problemValue: typeof val,
-    info: 'The transition table should be a nested mapping from states to symbols to instructions'});
+      {problemValue: typeof val,
+        info: 'The transition table should be a nested mapping from states to symbols to instructions'});
   }
 }
 
@@ -120,7 +120,7 @@ function parseSynonyms(val, table) {
   if (typeof val !== 'object') {
     throw new TMSpecError('Synonyms table has an invalid type',
       {problemValue: typeof val,
-      info: 'Synonyms should be a mapping from string abbreviations to instructions'
+        info: 'Synonyms should be a mapping from string abbreviations to instructions'
         + ' (e.g. <code>accept: {R: accept}</code>)'});
   }
   return _.mapValues(val, function (actionVal, key) {
@@ -147,8 +147,8 @@ function parseTable(synonyms, val) {
     }
     if (typeof stateObj !== 'object') {
       throw new TMSpecError('State entry has an invalid type',
-      {problemValue: typeof stateObj, state: state,
-      info: 'Each state should map symbols to instructions. An empty map signifies a halting state.'});
+        {problemValue: typeof stateObj, state: state,
+          info: 'Each state should map symbols to instructions. An empty map signifies a halting state.'});
     }
     return _.mapValues(stateObj, function (actionVal, symbol) {
       try {
@@ -174,7 +174,7 @@ function makeInstruction(symbol, move, state) {
 function checkTarget(table, instruct) {
   if (instruct.state != null && !(instruct.state in table)) {
     throw new TMSpecError('Undeclared state', {problemValue: instruct.state,
-    suggestion: 'Make sure to list all states in the transition table and define their transitions (if any)'});
+      suggestion: 'Make sure to list all states in the transition table and define their transitions (if any)'});
   }
   return instruct;
 }
@@ -210,7 +210,7 @@ function parseInstructionString(synonyms, val) {
   if (synonyms && synonyms[val]) { return synonyms[val]; }
   throw new TMSpecError('Unrecognized string',
     {problemValue: val,
-    info: 'An instruction can be a string if it\'s a synonym or a direction'});
+      info: 'An instruction can be a string if it\'s a synonym or a direction'});
 }
 
 // type ActionObj = {write?: any, L: ?string} | {write?: any, R: ?string}
@@ -226,8 +226,8 @@ function parseInstructionObject(val) {
       return key === 'L' || key === 'R' || key === 'write';
     })) {
       throw new TMSpecError('Unrecognized key',
-      {problemValue: badKey,
-      info: 'An instruction always has a tape movement <code>L</code> or <code>R</code>, '
+        {problemValue: badKey,
+          info: 'An instruction always has a tape movement <code>L</code> or <code>R</code>, '
         + 'and optionally can <code>write</code> a symbol'});
     }
   })();

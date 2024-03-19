@@ -1,8 +1,31 @@
 name: divisible by 3
 source code: |
+  input: '1001'
+  blank: _
+  start state: q0
+  table:
+    q0:
+      '0': R
+      '1':
+        R: q1
+      _:
+        R: accept
+    q1:
+      '0':
+        R: q2
+      '1':
+        R: q0
+    q2:
+      '0':
+        R: q1
+      '1':
+        R: q2
+    accept: {}
+  
+  
   # Checks if a binary number is divisible by 3.
-  input: '1001' # try '1111' (15), '10100' (20), '111001' (57)
-  blank: ' '
+  # try '1111' (15), '10100' (20), '111001' (57)
+  
   # How it works:
 
   # Consider reading a binary number, say 10011 (19),
@@ -21,20 +44,6 @@ source code: |
 
   # Now instead of tracking the entire number, just track the remainder.
   # It works the same way.
-  start state: q0
-  table:
-    q0:
-      0: R       # 2*0 + 0 = 0
-      1: {R: q1} # 2*0 + 1 = 1
-      ' ': {R: accept}
-    q1:
-      0: {R: q2} # 2*1 + 0 = 2
-      1: {R: q0} # 2*1 + 1 = 3
-    q2:
-      0: {R: q1} # 2*2 + 0 = 4
-      1: {R: q2} # 2*2 + 1 = 5
-    accept:
-
 
   # Exercises:
 
@@ -51,4 +60,4 @@ positions:
   q0: {x: 230, y: 250}
   q1: {x: 400, y: 250}
   q2: {x: 570, y: 250}
-  accept: {x: 230.01, y: 380}
+  accept: {x: 230, y: 380}

@@ -1,5 +1,29 @@
 name: 3-state busy beaver
 source code: |
+  input: ''
+  blank: '0'
+  start state: A
+  table:
+    A:
+      '0':
+        write: 1
+        R: B
+      '1':
+        L: C
+    B:
+      '0':
+        write: 1
+        L: A
+      '1': R
+    C:
+      '0':
+        write: 1
+        L: B
+      '1':
+        R: H
+    H: {}
+  
+  
   # A 3-state 2-symbol busy beaver for most non-blank symbols.
   # It takes 13 steps and leaves 6 non-blank symbols on the tape.
 
@@ -10,19 +34,6 @@ source code: |
   #   Some of the machines would never halt. Out of the ones that do halt,
   #   a machine that leaves the most non-blank symbols on the tape
   #   is called a busy beaver.
-  blank: '0'
-  start state: A
-  table:
-    A:
-      0: {write: 1, R: B}
-      1: {L: C}
-    B:
-      0: {write: 1, L: A}
-      1: R
-    C:
-      0: {write: 1, L: B}
-      1: {R: H}
-    H:
 
   # An alternative criterion is halting after the most steps.
   # This busy beaver takes the most steps (21) but only prints 5 1's:
@@ -35,7 +46,7 @@ source code: |
     # C:
     #   0: {write: 1, L}
     #   1: {L: A}
-    # H:
+    # H: {}
 
 
   # Exercise:
@@ -53,7 +64,7 @@ source code: |
 
   #   Answer: (2k(n+1))^(nk)
 positions:
-  A: {x: 320, y: 296.188}
-  B: {x: 400, y: 157.624}
-  C: {x: 480, y: 296.188}
-  H: {x: 400, y: 376.188}
+  A: {x: 320, y: 300}
+  B: {x: 400, y: 156}
+  C: {x: 480, y: 300}
+  H: {x: 400, y: 376}

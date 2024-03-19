@@ -45,7 +45,7 @@ Object.defineProperties(TMSimulator.prototype, {
    * • Setting a new source code will attempt to persist the state node positions.
    * • To set a new machine, first call .clear(), then set the source code.
    */
-  sourceCode: {
+  sourceCode: { // this is the getter and setter for the yaml code inside the ace editor
     get: function () {
       return this.__sourceCode;
     },

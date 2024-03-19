@@ -1,18 +1,53 @@
 name: powers of two
 source code: |
-  # Matches strings of 0s whose length is a power of two.
-
-  # This example comes from the textbook
-  #   "Introduction to the Theory of Computation" (3rd edition, 2012)
-  #   by Michael Sipser
-  # The states have been renamed (from q1, q2, etc.)
-  # to make it easier to understand.
-  input: '0000' # try '0', '000', '00000000'
-  blank: ' '
+  input: '0000'
+  blank: _
   start state: zero
   synonyms:
-    accept: {R: accept}
-    reject: {R: reject}
+    accept:
+      R: accept
+    reject:
+      R: reject
+  table:
+    zero:
+      '0':
+        write: _
+        R: one
+      _: reject
+    one:
+      '0':
+        write: x
+        R: even
+      x: R
+      _: accept
+    even:
+      '0':
+        R: odd
+      x: R
+      _:
+        L: back
+    odd:
+      '0':
+        write: x
+        R: even
+      x: R
+      _: reject
+    back:
+      '0,x': L
+      _:
+        R: one
+    accept: {}
+    reject: {}
+
+  
+  # Matches strings of 0s whose length is a power of two.
+
+    # This example comes from the textbook
+    #   "Introduction to the Theory of Computation" (3rd edition, 2012)
+    #   by Michael Sipser
+    # The states have been renamed (from q1, q2, etc.)
+    # to make it easier to understand.
+  
   # The idea: divide the length by 2 repeatedly until it reaches 1.
 
   # To do this, cross off every other 0, one pass at a time.
@@ -22,29 +57,7 @@ source code: |
 
   # Note that since the first 0 is never crossed off, we can simply
   # erase it on the first pass and start the count from 1 from then on.
-  table:
-    zero:
-      0  : {write: ' ', R: one}
-      ' ': reject
-    # Base case: accept length of 1 = 2^0.
-    one:
-      0  : {write: x, R: even}
-      ' ': accept
-      x  : R
-    # Inductive case: divide by 2 and check for no remainder.
-    even:
-      0  : {R: odd}
-      ' ': {L: back} # return for another pass
-      x  : R
-    odd: # odd and > 1
-      0  : {write: x, R: even}
-      ' ': reject # odd number of 0s on this pass
-      x  : R
-    back:
-      ' ': {R: one}
-      [0,x]: L
-    accept:
-    reject:
+
 positions:
   zero:   {x: 200, y: 200}
   one:    {x: 400, y: 200}

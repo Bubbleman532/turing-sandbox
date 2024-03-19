@@ -55,6 +55,34 @@ function pulseEdge(edge) {
 }
 
 function addTape(div, spec) {
+  //build the controls div using d3 code
+  var container = div.append('div')
+    .attr('id', 'tape-edit-controls')
+    .attr('style', 'display: none')
+    .classed('edit-controls', true);
+
+  container.append('input')
+    .attr('id', 'tape-edit-input')
+    .attr('type', 'text')
+    .attr('style', 'width: 100px; text-align: center');
+
+  var blankDiv = container.append('div')
+    .append('label')
+    .attr('for', 'tape-edit-blank')
+    .attr('style', 'font-weight: bold')
+    .text('Blank:');
+
+  blankDiv.append('input')
+    .attr('id', 'tape-edit-blank')
+    .attr('type', 'text')
+    .attr('maxlength', '1')
+    .attr('style', 'width: 30px; text-align: center');
+
+  container.append('button')
+    .attr('id', 'tape-edit-set')
+    .classed('btn btn-primary', true)
+    .text('Set');
+
   return new TapeViz(div.append('svg').attr('class', 'tm-tape'), 9,
     spec.blank, spec.input ? String(spec.input).split('') : []);
 }

@@ -2,7 +2,21 @@
 var Tape = require('./Tape.js'),
     d3   = require('d3');
 require('./tape.css');
+var jsyaml = require('js-yaml');
+var ace = require('ace-builds/src-min-noconflict');
+const util = require('../util');
 
+var nodeEditControls = window.document.getElementById('node-edit-controls');
+var transitionEditControls = window.document.getElementById('transition-edit-controls');
+var nodeLabel = window.document.getElementById('nodeLabel');
+var startState = window.document.getElementById('startState');
+var read = window.document.getElementById('read');
+var write = window.document.getElementById('write');
+var moveL = window.document.getElementById('moveL');
+var moveR = window.document.getElementById('moveR');
+var deleteNode = window.document.getElementById('deleteNode');
+var deleteLink = window.document.getElementById('deleteLink');
+var source = ace.edit(document.getElementById('editor-container'));
 var cellWidth = 50;
 var cellHeight = 50;
 
@@ -12,7 +26,7 @@ function initTapeCells(selection) {
       // the box outline is purely visual, so remove its data binding
       .datum(null)
       .attr({'width': cellWidth,
-             'height': cellHeight});
+        'height': cellHeight});
   selection.append('text')
       .text(function (d) { return d; })
       .attr({'x': cellWidth/2, 'y': cellHeight/2 + 8});
@@ -64,11 +78,11 @@ function TapeViz(svg, lookaround, blank, input) {
 
   svg.append('rect')
       .attr({'id': 'tape-head',
-             'width': (1+1/5) * cellWidth,
-             'height': (1+1/5) * cellHeight,
-             'x': -cellWidth+10/2 + cellWidth*lookaround,
-             'y': 10/2
-           });
+        'width': (1+1/5) * cellWidth,
+        'height': (1+1/5) * cellHeight,
+        'x': -cellWidth+10/2 + cellWidth*lookaround,
+        'y': 10/2
+      });
 
   this.wrapper.selectAll('.tape-cell')
       .data(this.readRange(-lookaround, lookaround))
@@ -77,6 +91,63 @@ function TapeViz(svg, lookaround, blank, input) {
       .call(initTapeCells)
       .call(positionCells)
   ;
+
+  //when the tape is clicked, show the edit controls
+  svg.on('dblclick', function () {
+    console.log("tape doubleclicked");
+    //disable all the form fields - messy...
+    nodeLabel.disabled = true;
+    nodeLabel.value = '';
+    startState.disabled = true;
+    startState.checked = false;
+    deleteNode.disabled = true;
+    read.disabled = true;
+    read.value = '';
+    write.disabled = true;
+    write.value = '';
+    moveL.disabled = true;
+    moveR.disabled = true;
+    deleteLink.disabled = true;
+    transitionEditControls.setAttribute("style", "display: none");
+    nodeEditControls.setAttribute("style", "display: flex");
+    //grab the machine
+    var machine = jsyaml.safeLoad(source.getValue());
+    var controlsDiv = window.document.getElementById('tape-edit-controls');
+    controlsDiv.setAttribute("style", "display: flex");
+    var controlsInput = window.document.getElementById('tape-edit-input');
+    controlsInput.value = machine['input'];
+    var controlsBlank = window.document.getElementById('tape-edit-blank');
+    controlsBlank.value = machine['blank'];
+    var controlsSet = window.document.getElementById('tape-edit-set');
+    controlsSet.addEventListener('click', function () {
+      //change input
+      machine['input'] = controlsInput.value;
+      //change every read symbol that matches the blank symbol
+      for (var node in machine.table) {
+        for (var readSymbols in machine.table[node]){
+          var newRead = [];
+          var splitRead = readSymbols.split(",");
+          for (var symbol of splitRead) {
+            if (symbol === machine['blank']) symbol = controlsBlank.value;
+            newRead.push(symbol);
+          }
+          if (!(readSymbols === newRead.join())){
+             machine.table[node][newRead] = machine.table[node][readSymbols];
+             delete machine.table[node][readSymbols];
+          }
+          if (machine.table[node][newRead].hasOwnProperty("write")) {
+            if (machine.table[node][newRead]['write'] === machine['blank'])
+              machine.table[node][newRead]['write'] = controlsBlank.value
+          }
+        }
+      }
+      //finally change blank symbol
+      machine['blank'] = controlsBlank.value;
+      //we're finished here
+      source.setValue(jsyaml.safeDump(machine));
+      util.setCookie('TMReload', 'tape changed');
+    })
+  });
 }
 
 TapeViz.prototype = Object.create(Tape.prototype);

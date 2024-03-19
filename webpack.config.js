@@ -90,7 +90,8 @@ const commonConfig = {
 //////////////////////
 
 const devConfig = {
-  output: {pathinfo: true}
+  output: {pathinfo: true},
+  devtool: 'source-map'
 };
 
 const prodConfig = {

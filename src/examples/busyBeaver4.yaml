@@ -1,17 +1,40 @@
 name: 4-state busy beaver
 source code: |
-  # A 4-state 2-symbol busy beaver
-  # that halts after 107 steps, leaving 13 1's on the tape.
-  # It takes the most steps *and* prints the most 1's.
   blank: 0
   start state: A
   table:
-    A: {0: {write: 1, R: B}, 1:           {L: B}}
-    B: {0: {write: 1, L: A}, 1: {write: 0, L: C}}
-    C: {0: {write: 1, R: H}, 1:           {L: D}}
-    D: {0: {write: 1, R   }, 1: {write: 0, R: A}}
-    H:
+    A:
+      '0':
+        write: 1
+        R: B
+      '1':
+        L: B
+    B:
+      '0':
+        write: 1
+        L: A
+      '1':
+        write: 0
+        L: C
+    C:
+      '0':
+        write: 1
+        R: H
+      '1':
+        L: D
+    D:
+      '0':
+        write: 1
+        R: D
+      '1':
+        write: 0
+        R: A
+    H: {}
 
+
+  # A 4-state 2-symbol busy beaver
+  # that halts after 107 steps, leaving 13 1's on the tape.
+  # It takes the most steps *and* prints the most 1's.
 
   # Finding a busy beaver requires considering every n-state k-symbol
   # machine and proving either that it halts with no more non-blank symbols

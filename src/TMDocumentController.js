@@ -25,6 +25,7 @@ var UndoManager = ace.require('ace/undomanager').UndoManager;
  * @param {HTMLButtonElement} buttons.simulator.run
  * @param {HTMLButtonElement} buttons.simulator.step
  * @param {HTMLButtonElement} buttons.simulator.reset
+ * @param {HTMLButtonElement} buttons.editor.runlog For switching between editor and log
  * @param {HTMLButtonElement} buttons.editor.load For loading the editor source
  * @param {HTMLButtonElement} buttons.editor.revert For reverting the editor source
  * @param {TMDocument} document The document to load from and save to.
@@ -49,6 +50,39 @@ function TMDocumentController(containers, buttons, document) {
 
   var editorButtons = buttons.editor;
   var self = this;
+
+  util.setCookie('TMReload', '');
+
+  window.setInterval(function () {
+    if (util.getCookie('TMReload')){
+      self.loadEditorSource();
+      // save whenever "Load" is pressed
+      self.save();
+      //self.reset();
+      //self.editor.focus();
+      util.setCookie('TMReload', '');
+    }
+  }, 50);
+
+  editorButtons.runlog
+      .addEventListener('click', function () {
+        var divLog = window.document.getElementById('run-log');
+        var divEditor = window.document.getElementById('editor-container');
+
+        if (divLog.getAttribute("hidden") === "hidden") {
+          divLog.removeAttribute("hidden");
+          divEditor.setAttribute("hidden", "hidden");
+          editorButtons.load.disabled = true;
+          editorButtons.revert.disabled = true;
+          editorButtons.runlog.innerHTML="Editor";
+        } else {
+          divEditor.removeAttribute("hidden");
+          divLog.setAttribute("hidden", "hidden");
+          editorButtons.load.disabled = false;
+          editorButtons.revert.disabled = false;
+          editorButtons.runlog.innerHTML="Run Log";
+        }
+      });
   editorButtons.load
       .addEventListener('click', function () {
         self.loadEditorSource();
@@ -184,7 +218,7 @@ TMDocumentController.prototype.setAlertErrors = function (errors) {
           var column = annot.column;
           div.append('strong')
               .text('Syntax error on ')
-            .append('a')
+             .append('a')
               .text('line ' + lineNum)
               .on('click', function () {
                 self.editor.gotoLine(lineNum, column, true);
